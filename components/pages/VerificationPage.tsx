@@ -11,7 +11,9 @@ export default function VerificationPage() {
 		globalName: string | null;
 		pfp: string | null;
 		ip: string | null;
+		banner: string | null; // Removed 'undefined'
 	} | null>(null);
+
 	const router = useRouter();
 	const [isVerifying, setIsVerifying] = useState(false);
 
@@ -67,7 +69,10 @@ export default function VerificationPage() {
 						<Image
 							id="banner"
 							className="h-32 w-full object-cover lg:h-48 rounded-t-lg rounded-b-2xl"
-							src={user.banner}
+							src={
+								user.banner ??
+								"/dominik-scythe-p1SjJPVZPCM-unsplash.jpg"
+							}
 							alt=""
 							width={240}
 							height={140}
@@ -89,7 +94,10 @@ export default function VerificationPage() {
 								<Image
 									draggable="false"
 									className="h-24 w-24 rounded-full ring-8 ring-zinc-800 sm:h-32 sm:w-32"
-									src={user.pfp}
+									src={
+										user.pfp ??
+										"https://cdn.discordapp.com/embed/avatars/0.png"
+									}
 									alt=""
 									width={240}
 									height={140}
