@@ -1,7 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 import { cookies } from "next/headers";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
 	const cookieStore = cookies();
 	const accessToken = cookieStore.get("access_token");
 
@@ -13,12 +13,9 @@ export async function GET() {
 	}
 
 	try {
-		const ipAddressResponse = await fetch("https://ipinfo.io/ip", {
-			headers: {
-				"accept-encoding": "gzip, deflate, br, zstd",
-				referer: "https://ipinfo.io/",
-			},
-		});
+		const ipAddress = (
+			req.headers.get("x-forwarded-for") ?? "127.0.0.1"
+		).split(",")[0];
 
 		const userResponse = await fetch(
 			"https://discord.com/api/users/@me",
@@ -29,12 +26,11 @@ export async function GET() {
 			},
 		);
 
-		if (!userResponse.ok || !ipAddressResponse.ok) {
+		if (!userResponse.ok) {
 			throw new Error("Failed to fetch user data");
 		}
 
 		const userData = await userResponse.json();
-		const ipAddress = await ipAddressResponse.text();
 
 		return NextResponse.json({
 			id: userData.id,
